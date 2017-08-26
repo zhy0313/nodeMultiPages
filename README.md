@@ -1,9 +1,20 @@
-# node.js+express+mysql+Webpack+Vue+es6进行多页面开发 v.1.0.0
+# node.js+express+mysql+Webpack+Vue+es6进行多页面开发 v.1.0.1
 
 ---
 
 ## 前言
 这是基于node.js的一套全栈网站开发系统，可以用于移动端，也可以用于PC端。整个架构分两部分，一部分是后端部分，主要利用node.js+express+mysql为前端提供API接口；另一部分是前端部分，主要是利用Webpack+Vue+axios，调用后端提供的API接口，进行页面的渲染。与传统的单页面开发不同，此套系统是多页面的开发模式，前端的开发目录source文件夹，仿照小程序的目录结构，利用vue的单文件，进行组件式开发。同时，此套系统利用node.js+express，从后端直接进行页面渲染，克服了传统ajax数据请求，搜索引擎不能抓取页面数据的缺陷。
+
+
+## v.1.0.1版本说明
+由于之前webpack采用的是1.x的版本，在有些操作系统会出现了一些莫名奇怪的问题，跟踪发现是由于webpack版本过低造成的，所以此次对package.json里面的依赖包进行升级，webpack.config.js文件也进行了相应的改写，另外在更目录下添加了.babelrc文件，如果安装的时候没有此文件，创建一个.babelrc文件，手动添加代码为：
+{
+  "presets": [
+    "es2015"
+  ]
+}
+
+
 
 ## 项目目录结构
 

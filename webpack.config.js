@@ -8,6 +8,7 @@ var glob = require('glob');
 
 var entries = getEntry('./source/**/*.js'); // 获得入口js文件
 var chunks = Object.keys(entries);
+var extractCSS=new ExtractTextPlugin('css/[name].css');
 
 module.exports = {
   entry: entries,
@@ -18,27 +19,36 @@ module.exports = {
     chunkFilename: 'js/[id].[hash].js'
   },
   resolve: {
-    extensions: ['', '.js', '.vue'],
+    extensions: ['.js', '.vue'],
     alias: {
       'vue': 'vue/dist/vue.js'
     }
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.css$/,
         // 使用提取css文件的插件，能帮我们提取webpack中引用的和vue组件中使用的样式
-        loader: ExtractTextPlugin.extract('style', 'css')
+        loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
       },
       {
         // vue-loader，加载vue组件
         test: /\.vue$/,
-        loader: 'vue'
+        loader: 'vue-loader',
+        options: {
+          loaders: {
+            js: 'babel-loader',
+            css: ExtractTextPlugin.extract({
+                use: ['css-loader'],
+                fallback: 'vue-style-loader' 
+            })
+          }
+        }
       },
       {
         test: /\.js$/,
         // 使用es6开发，这个加载器帮我们处理
-        loader: 'babel',
+        loader: 'babel-loader',
         exclude: /node_modules/
       },
       {
@@ -49,28 +59,18 @@ module.exports = {
           limit: 10000,
           name: './imgs/[name].[ext]?[hash:7]'
         }
-      },
-      {
-        test:/\.scss$/,
-        loaders:['style','css','sass']
-      },
-      {
-        test: /\.less$/,
-        loader: 'style-loader!css-loader!less-loader'
       }
     ]
   },
-  babel: {
-    presets: ['es2015'],
-    plugins: ['transform-runtime']
-  },
-  vue: { // vue的配置
-    loaders: {
-      js: 'babel',
-      css: ExtractTextPlugin.extract('vue-style-loader', 'css-loader')
-    }
-  },
   plugins: [
+    new webpack.LoaderOptionsPlugin({
+      options: {
+        babel: {
+          
+          plugins: ['transform-runtime']
+        }
+      }
+    }),
     // 提取公共模块
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendors', // 公共模块的名称
@@ -78,13 +78,12 @@ module.exports = {
       minChunks: chunks.length
     }),
     // 配置提取出的样式文件
-    new ExtractTextPlugin('css/[name].css')
+    extractCSS
   ],
   devServer: {
       host: 'localhost',
       inline: true,
       port: 8080,
-      colors: true,
       proxy: {
         "/": {
           target: "http://localhost:3000",
@@ -110,7 +109,7 @@ if (prod) {
         warnings: false
       }
     }),
-    new webpack.optimize.OccurenceOrderPlugin()
+    new webpack.optimize.OccurrenceOrderPlugin()
   ]);
 } else {
   module.exports.devtool = 'eval-source-map';
