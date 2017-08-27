@@ -8,7 +8,7 @@ var glob = require('glob');
 
 var entries = getEntry('./source/**/*.js'); // 获得入口js文件
 var chunks = Object.keys(entries);
-var extractCSS=new ExtractTextPlugin('css/[name].css');
+var extractCSS=new ExtractTextPlugin('css/[name].css');// 配置提取出的样式文件
 
 module.exports = {
   entry: entries,
@@ -29,7 +29,7 @@ module.exports = {
       {
         test: /\.css$/,
         // 使用提取css文件的插件，能帮我们提取webpack中引用的和vue组件中使用的样式
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
+        loader: "style-loader!css-loader"
       },
       {
         // vue-loader，加载vue组件
@@ -38,6 +38,7 @@ module.exports = {
         options: {
           loaders: {
             js: 'babel-loader',
+            //提取.vue组件中style标签里面的样式到一个独立的.css文件里
             css: ExtractTextPlugin.extract({
                 use: ['css-loader'],
                 fallback: 'vue-style-loader' 
@@ -63,14 +64,13 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.LoaderOptionsPlugin({
+    /*new webpack.LoaderOptionsPlugin({
       options: {
         babel: {
-          
           plugins: ['transform-runtime']
         }
       }
-    }),
+    }),*/
     // 提取公共模块
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendors', // 公共模块的名称
@@ -82,7 +82,6 @@ module.exports = {
   ],
   devServer: {
       host: 'localhost',
-      inline: true,
       port: 8080,
       proxy: {
         "/": {
@@ -113,6 +112,14 @@ if (prod) {
   ]);
 } else {
   module.exports.devtool = 'eval-source-map';
+  module.exports.plugins = module.exports.plugins.concat([
+    // 借鉴vue官方的生成环境配置
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: '"development"'
+      }
+    })
+  ]);
   module.exports.output.publicPath = '/';
 }
 
