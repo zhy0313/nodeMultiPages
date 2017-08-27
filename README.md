@@ -10,8 +10,10 @@
 由于之前webpack采用的是1.x的版本，在有些操作系统会出现了一些莫名奇怪的问题，跟踪发现是由于webpack版本过低造成的，所以此次对package.json里面的依赖包进行升级，webpack.config.js文件也进行了相应的改写，另外在更目录下添加了.babelrc文件，如果安装的时候没有此文件，创建一个.babelrc文件，手动添加代码为：
 {
   "presets": [
-    "es2015"
-  ]
+    ["es2015", { "modules": false }]
+  ],
+  "plugins": ["transform-runtime"],
+  "comments": false 
 }
 
 
