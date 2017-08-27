@@ -67,6 +67,7 @@ module.exports = {
     /*new webpack.LoaderOptionsPlugin({
       options: {
         babel: {
+          "presets": ["es2015"],
           plugins: ['transform-runtime']
         }
       }
@@ -97,7 +98,6 @@ module.exports.plugins = (module.exports.plugins || []);
 if (prod) {
   module.exports.devtool = 'source-map';
   module.exports.plugins = module.exports.plugins.concat([
-    // 借鉴vue官方的生成环境配置
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'
@@ -112,14 +112,14 @@ if (prod) {
   ]);
 } else {
   module.exports.devtool = 'eval-source-map';
-  module.exports.plugins = module.exports.plugins.concat([
-    // 借鉴vue官方的生成环境配置
+  /*module.exports.plugins = module.exports.plugins.concat([
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"development"'
       }
-    })
-  ]);
+    }),
+    new webpack.HotModuleReplacementPlugin()
+  ]);*/
   module.exports.output.publicPath = '/';
 }
 
