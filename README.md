@@ -74,7 +74,7 @@ index文件夹，必须包含app.vue、index.html、index.js这三个文件。�
 
 venders.css和venders.js文件是webpack插件帮我们自动生成的公共样式模块和公共js模块。打开页面，还能看到其他资源文件也都被正确处理了。
 
-4、目前后端我们使用的是3000端口，前端使用的是8080端口，开发者可以根据项目需要修改端口号；前端修改是在webpack.webconfig.js文件里；后端是在app.js文件里，app.js我们只是简单搭建了一个服务启动文件，若进行大型项目开发，还需自己配置文件，比如错误处理、日志打印等；
+4、目前后端我们使用的是3000端口，前端使用的是8099端口，开发者可以根据项目需要修改端口号；前端修改是在webpack.webconfig.js文件里；后端是在app.js文件里，app.js我们只是简单搭建了一个服务启动文件，若进行大型项目开发，还需自己配置文件，比如错误处理、日志打印等；
 
 ###### 使用步骤
 1、git clone https://github.com/liujianping520/nodeMultiPages
@@ -83,7 +83,7 @@ venders.css和venders.js文件是webpack插件帮我们自动生成的公共样�
 
 3、安装依赖：npm run build （先进行build，主要是为了先展示一个demo）
 
-4、开发环境：cd 到项目目录执行命令 npm run dev ；可以通过浏览器访问 localhost:8080/index/index.html 
+4、开发环境：cd 到项目目录执行命令 npm run dev ；可以通过浏览器访问 localhost:8099/index/index.html 
 
 5、开发环境：cd 到项目目录执行命令 npm start app.js （如果你安装了PM2 可以 pm2 start app; 如果安装了supervisor 可以 supervisor app）
 
