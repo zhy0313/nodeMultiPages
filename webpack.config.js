@@ -9,6 +9,34 @@ var glob = require('glob');
 var entries = getEntry('./source/**/*.js'); // 获得入口js文件
 var chunks = Object.keys(entries);
 var extractCSS=new ExtractTextPlugin('css/[name].css');// 配置提取出的样式文件
+var prod = process.env.NODE_ENV === 'production';//判断是生产环境还是开发环境 false：开发环境；true：生产环境
+
+//生产环境与开发环境vue加载规则
+var vueloaderRules=function(){
+  if(prod){
+      return {
+        // vue-loader，加载vue组件
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          loaders: {
+            js: 'babel-loader',
+            //提取.vue组件中style标签里面的样式到一个独立的.css文件里
+            css: ExtractTextPlugin.extract({
+                use: ['css-loader'],
+                fallback: 'vue-style-loader' 
+            })
+          }
+        }
+      };
+  }else{
+      return {
+        // vue-loader，加载vue组件
+        test: /\.vue$/,
+        loader: 'vue-loader'
+      };
+  }
+}();
 
 module.exports = {
   entry: entries,
@@ -31,21 +59,7 @@ module.exports = {
         // 使用提取css文件的插件，能帮我们提取webpack中引用的和vue组件中使用的样式
         loader: "style-loader!css-loader"
       },
-      {
-        // vue-loader，加载vue组件
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          loaders: {
-            js: 'babel-loader',
-            //提取.vue组件中style标签里面的样式到一个独立的.css文件里
-            css: ExtractTextPlugin.extract({
-                use: ['css-loader'],
-                fallback: 'vue-style-loader' 
-            })
-          }
-        }
-      },
+      vueloaderRules,
       {
         test: /\.js$/,
         // 使用es6开发，这个加载器帮我们处理
@@ -83,7 +97,9 @@ module.exports = {
   ],
   devServer: {
       host: 'localhost',
-      port: 8080,
+      port: 8099,
+      //subDirectory:'static',
+      //publicPath:'/',
       proxy: {
         "/": {
           target: "http://localhost:3000",
@@ -93,7 +109,7 @@ module.exports = {
     }
 };
 
-var prod = process.env.NODE_ENV === 'production';
+
 module.exports.plugins = (module.exports.plugins || []);
 if (prod) {
   module.exports.devtool = 'source-map';
